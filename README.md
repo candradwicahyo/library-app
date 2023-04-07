@@ -1,6 +1,8 @@
 # library app
 
-dibuat dengan menggunakan html, css dan javascript. program ini berguna untuk menampilkan list buku favorit kalian, entah buku yang sudah dibaca ataupun belum dibaca sama sekali. di program ini kalian bisa melakukan tambah buku, hapus buku, edit atau ubah buku, melakukan pencarian terhadap buku tertentu dan pastinya kalian bisa menghapus semua buku sekaligus.
+dibuat dengan menggunakan html, css dan javascript. program ini berguna untuk menampilkan list buku favorit kalian, entah buku yang sudah dibaca ataupun belum dibaca sama sekali.
+
+di program ini kalian bisa melakukan tambah buku, hapus buku, edit atau ubah buku, melakukan pencarian terhadap buku tertentu dan pastinya kalian bisa menghapus semua buku sekaligus.
 
 kode sudah saya sertakan dengan komentar supaya kalian para programmer pemula bisa mempelajarinya.
 
