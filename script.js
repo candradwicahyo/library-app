@@ -32,8 +32,8 @@ window.addEventListener('DOMContentLoaded', () => {
   
   function clearForm() {
     // bersihkan form
-    const formWrapper = document.querySelector('.form-wrapper');
-    formWrapper.reset();
+    const formWrapper = document.querySelectorAll('.form-wrapper');
+    formWrapper.forEach(form => form.reset());
   }
   
   // ketika tombol submit ditekan, maka jalankan fungsi addBook()
@@ -48,18 +48,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (modalTitle.textContent.includes('add')) {
       
       // value input
-      const title = inputTitle.value.trim();
-      const author = inputAuthor.value.trim();
-      const date = inputDate.value.trim();
-      const status = inputStatus.value.trim();
-      
-      // jadikan value input sebagai objek
-      const data = {
-        title: title,
-        author: author,
-        date: date,
-        status: status
-      };
+      const data = getInputValues();
       
       // lakukan validasi terlebih dahulu
       if (validate(data) == true) {
@@ -68,33 +57,35 @@ window.addEventListener('DOMContentLoaded', () => {
           lakukan validasi sekali lagi, validasi kali ini bertujuan untuk mengecek
           apakah buku yang dibuat sudah pernah dibuat sebelumnya atau belum dibuat sama sekali
         */
-        if (isBookExist(data)) {
-          // jika buku sudah pernah dibuat sebelumnya
-          return alerts('error', 'The book is already in the list!');
-        } else {
+        if (isBookExist(data)) return alerts('error', 'The book is already in the list!');
           
-          // jika buku tersebut belum pernah dibuat sebelumnya
-          // masukkan isi variabel "data" kedalam variabel "books"
-          books.unshift(data);
-          // simpan isi variabel "books" kedalam localstorage
-          saveToLocalstorage();
-          // render dan tampilkan element tersebut
-          showUI(data);
-          // berikan pesan bahwa "buku berhasil ditambahkan"
-          alerts('success', 'New book has been added!');
-          // load data yang ada di dalam localstorage
-          loadBook();
-          // bersihkan value form
-          clearForm();
-          
-        }
+        // jika buku tersebut belum pernah dibuat sebelumnya
+        // masukkan isi variabel "data" kedalam variabel "books"
+        books.unshift(data);
+        // simpan isi variabel "books" kedalam localstorage
+        saveToLocalstorage();
+        // berikan pesan bahwa "buku berhasil ditambahkan"
+        alerts('success', 'New book has been added!');
+        // load data yang ada di dalam localstorage
+        loadBook();
+        // bersihkan value form
+        clearForm();
         
       }
       
     }
   }
   
-  function validate({title, author, date}) {
+  function getInputValues() {
+    return {
+      title: inputTitle.value.trim(),
+      author: inputAuthor.value.trim(),
+      date: inputDate.value.trim(),
+      status: inputStatus.value.trim()
+    };
+  }
+  
+  function validate({ title, author, date }) {
     // jika input "title", "author" dan "status" kosong
     if (!title && !author && !date) return alerts('error', 'All input is empty!');
     // jika masih ada input yang kosong
@@ -116,7 +107,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  function isBookExist({title, author, date, status}) {
+  function isBookExist({ title, author, date, status }) {
     // hasil default jika tidak ada buku yang dibuat sebelumnya
     let exist = false;
     books.forEach(book => {
@@ -136,7 +127,7 @@ window.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('library-app', JSON.stringify(books));
   }
   
-  function showUI(data, index = 0) {
+  function showUI(data, index) {
     // render data menjadi element HTML
     const result = elementUI(data, index);
     // tampilkan element tersebut
@@ -160,7 +151,7 @@ window.addEventListener('DOMContentLoaded', () => {
   
   loadBook();
   
-  function elementUI({title, author, date, status}, index) {
+  function elementUI({ title, author, date, status }, index) {
     return `
     <tr>
       <td class="p-3 fw-light">${title}</td>
@@ -262,47 +253,29 @@ window.addEventListener('DOMContentLoaded', () => {
       if (modalTitle.textContent.includes('edit')) {
         
         // value input
-        const title = inputTitle.value.trim();
-        const author = inputAuthor.value.trim();
-        const date = inputDate.value.trim();
-        const status = inputStatus.value.trim();
-        
-        // jadikan value input sebagai objek
-        const data = {
-          title: title,
-          author: author,
-          date: date,
-          status: status
-        };
+        const data = getInputValues();
         
         // lakukan validasi terlebih dahulu
-        if (validate(data) == true) {
+        if (validate(data)) {
           
           /*
             lakukan validasi sekali lagi, validasi kali ini bertujuan untuk mengecek
             apakah buku yang dibuat sudah pernah dibuat sebelumnya atau belum dibuat sama sekali
           */
-          if (isBookExist(data)) {
-            // jika buku sudah pernah dibuat sebelumnya
-            return alerts('error', 'The book is already in the list!');
-          } else {
+          // jika buku sudah pernah dibuat sebelumnya
+          if (isBookExist(data)) return alerts('error', 'The book is already in the list!');
             
-            // jika buku tersebut belum pernah dibuat sebelumnya
-            // ubah isi array dari index sesuai isi parameter "index"
-            books[index].title = title;
-            books[index].author = author;
-            books[index].date = date;
-            books[index].status = status;
-            // simpan isi variabel "books" kedalam localstorage
-            saveToLocalstorage();
-            // jadikan variabel "books" dan parameter "index" sebagai null supaya tidak ada data yang duplikat
-            books = null, index = null;
-            // berikan pesan bahwa "buku berhasil diubah"
-            alerts('success', 'Book has been updated!');
-            // load data yang ada didalam localstorage
-            loadBook();
-            
-          }
+          // jika buku tersebut belum pernah dibuat sebelumnya
+          // ubah isi array dari index sesuai isi parameter "index"
+          books[index] = data;
+          // simpan isi variabel "books" kedalam localstorage
+          saveToLocalstorage();
+          // berikan pesan bahwa "buku berhasil diubah"
+          alerts('success', 'Book has been updated!');
+          // load data yang ada didalam localstorage
+          loadBook();
+          // jadikan parameter "index" sebagai null supaya tidak ada data yang duplikat
+          index = null;
           
         }
         
